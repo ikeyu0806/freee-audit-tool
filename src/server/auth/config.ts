@@ -33,10 +33,13 @@ const FreeeProvider: OAuthConfig<any> = {
   name: "freee",
   type: "oauth",
 
+  checks: ["state"], // ← これが超重要（pkceを外す）
+
   authorization: {
     url: "https://accounts.secure.freee.co.jp/public_api/authorize",
     params: {
       scope: "read write",
+      response_type: "code",
     },
   },
 
@@ -46,22 +49,6 @@ const FreeeProvider: OAuthConfig<any> = {
 
   userinfo: {
     url: "https://api.freee.co.jp/api/1/users/me",
-    async request({ tokens }: { tokens: { access_token?: string } }) {
-      if (!tokens?.access_token) {
-        throw new Error("No access token");
-      }
-
-      const res = await fetch(
-        "https://api.freee.co.jp/api/1/users/me",
-        {
-          headers: {
-            Authorization: `Bearer ${tokens.access_token}`,
-          },
-        }
-      );
-
-      return await res.json();
-    },
   },
 
   clientId: env.FREEE_CLIENT_ID,
