@@ -1,10 +1,20 @@
-FROM node:20-alpine
+FROM node:20
 
 WORKDIR /app
 
-COPY . .
+# ① 依存ファイルを先にコピー（キャッシュ効かせる）
+COPY package.json package-lock.json ./
 
 RUN npm install
+
+# ② Prisma schema をコピー
+COPY prisma ./prisma
+
+# ③ Linux環境でPrisma Client生成
+RUN npx prisma generate
+
+# ④ 残りのソースコードをコピー
+COPY . .
 
 EXPOSE 3000
 
