@@ -84,19 +84,13 @@ export const authConfig = {
   ],
   adapter: PrismaAdapter(db),
   callbacks: {
-    async jwt({ token, account }) {
-      // 初回ログイン時
-      if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
+    async session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
       }
 
-      return token;
-    },
-
-    async session({ session, token }) {
-      session.accessToken = token.accessToken as string | undefined;
       return session;
     },
-  },
+  }
+
 } satisfies NextAuthConfig;
