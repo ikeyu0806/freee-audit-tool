@@ -6,7 +6,7 @@ import { api } from "~/trpc/react";
 export default function Page() {
   const { data: session } = useSession();
 
-  const { data, isLoading } = api.freee.getDeals.useQuery();
+  const { data, isLoading } = api.freee.getFixedCosts.useQuery();
 
   if (!session) {
     return (
