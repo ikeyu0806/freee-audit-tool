@@ -4,6 +4,9 @@ import DiscordProvider from "next-auth/providers/discord";
 
 import { db } from "~/server/db";
 
+import type { OAuthConfig } from "next-auth/providers";
+import { env } from "~/env";
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -24,6 +27,33 @@ declare module "next-auth" {
   //   // role: UserRole;
   // }
 }
+
+const FreeeProvider: OAuthConfig<any> = {
+  id: "freee",
+  name: "freee",
+  type: "oauth",
+  authorization: {
+    url: "https://accounts.secure.freee.co.jp/public_api/authorize",
+    params: {
+      scope: "read",
+    },
+  },
+  token: "https://accounts.secure.freee.co.jp/public_api/token",
+  userinfo: {
+    async request() {
+      return { id: "freee-user" };
+    },
+  },
+  clientId: env.FREEE_CLIENT_ID,
+  clientSecret: env.FREEE_CLIENT_SECRET,
+  profile() {
+    return {
+      id: "freee-user",
+      name: "freee-user",
+      email: null,
+    };
+  },
+};
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
