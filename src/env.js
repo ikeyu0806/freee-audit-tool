@@ -19,6 +19,7 @@ export const env = createEnv({
       .default("development"),
     FREEE_CLIENT_ID: z.string(),
     FREEE_CLIENT_SECRET: z.string(),
+    FREEE_COMPANY_ID: z.string(),
   },
 
   /**
@@ -42,6 +43,7 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     FREEE_CLIENT_ID: process.env.FREEE_CLIENT_ID,
     FREEE_CLIENT_SECRET: process.env.FREEE_CLIENT_SECRET,
+    FREEE_COMPANY_ID: process.env.FREEE_COMPANY_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

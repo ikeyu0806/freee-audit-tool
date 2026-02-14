@@ -32,24 +32,45 @@ const FreeeProvider: OAuthConfig<any> = {
   id: "freee",
   name: "freee",
   type: "oauth",
+
   authorization: {
     url: "https://accounts.secure.freee.co.jp/public_api/authorize",
     params: {
-      scope: "read",
+      scope: "read write",
     },
   },
-  token: "https://accounts.secure.freee.co.jp/public_api/token",
+
+  token: {
+    url: "https://accounts.secure.freee.co.jp/public_api/token",
+  },
+
   userinfo: {
-    async request() {
-      return { id: "freee-user" };
+    url: "https://api.freee.co.jp/api/1/users/me",
+    async request({ tokens }: { tokens: { access_token?: string } }) {
+      if (!tokens?.access_token) {
+        throw new Error("No access token");
+      }
+
+      const res = await fetch(
+        "https://api.freee.co.jp/api/1/users/me",
+        {
+          headers: {
+            Authorization: `Bearer ${tokens.access_token}`,
+          },
+        }
+      );
+
+      return await res.json();
     },
   },
+
   clientId: env.FREEE_CLIENT_ID,
   clientSecret: env.FREEE_CLIENT_SECRET,
-  profile() {
+
+  profile(profile) {
     return {
-      id: "freee-user",
-      name: "freee-user",
+      id: String(profile.user?.id ?? profile.id),
+      name: profile.user?.display_name ?? "freee-user",
       email: null,
     };
   },
@@ -72,6 +93,7 @@ export const authConfig = {
      *
      * @see https://next-auth.js.org/providers/github
      */
+    FreeeProvider,
   ],
   adapter: PrismaAdapter(db),
   callbacks: {

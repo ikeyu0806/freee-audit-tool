@@ -1,15 +1,29 @@
 "use client";
 
+import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/trpc/react";
 
 export default function Page() {
-  const { data, isLoading } = api.freee.getDeals.useQuery({
-    companyId: 1816694,
-  });
+  const { data: session } = useSession();
+
+  const { data, isLoading } = api.freee.getDeals.useQuery();
+
+  if (!session) {
+    return (
+      <div>
+        <button onClick={() => signIn("freee")}>
+          Login with freee
+        </button>
+      </div>
+    );
+  }
 
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <pre>{JSON.stringify(data, null, 2)}</pre>
+    <div>
+      <button onClick={() => signOut()}>Logout</button>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
   );
 }
