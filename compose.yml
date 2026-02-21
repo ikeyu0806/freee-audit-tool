@@ -21,12 +21,11 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
-      - /app/node_modules
     depends_on:
       - db
     env_file:
       - .env
-    command: npm run dev
+    command: sh -c "npx prisma migrate deploy && npm run dev"
 
 volumes:
   postgres_data:

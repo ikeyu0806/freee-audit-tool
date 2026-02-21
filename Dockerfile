@@ -16,6 +16,9 @@ RUN npx prisma generate
 # ④ 残りのソースコードをコピー
 COPY . .
 
+# ⑤ Prismaクライアント生成
+RUN npx prisma generate
+
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
